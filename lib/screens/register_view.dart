@@ -21,6 +21,25 @@ class _RegisterViewState extends State<RegisterView> {
     super.initState();
   }
 
+  register() async {
+    try {
+      var emailAddress = _email.text;
+      var password = _password.text;
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailAddress,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        print('User already registered');
+      } else if (e.code == 'weak-password') {
+        print('weak password');
+      } else if (e.code == 'invalid-email') {
+        print('invalid email');
+      }
+    }
+  }
+
   @override
   void dispose() {
     _email.dispose();
@@ -62,14 +81,8 @@ class _RegisterViewState extends State<RegisterView> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () async {
-                      var emailAddress = _email.text;
-                      var password = _password.text;
-                      await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                        email: emailAddress,
-                        password: password,
-                      );
+                    onPressed: () {
+                      register();
                     },
                     child: const Text('Register'),
                   ),
