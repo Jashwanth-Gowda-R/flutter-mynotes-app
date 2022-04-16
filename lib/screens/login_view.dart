@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mynotes/firebase_options.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+class LoginView extends StatefulWidget {
+  const LoginView({Key? key}) : super(key: key);
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _LoginViewState extends State<LoginView> {
   late TextEditingController _email;
   late TextEditingController _password;
 
@@ -32,7 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        title: const Center(child: Text('Register')),
       ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
@@ -76,7 +76,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ],
               );
             default:
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
           }
         },
       ),
