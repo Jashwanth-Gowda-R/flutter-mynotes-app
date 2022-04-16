@@ -21,6 +21,23 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
   }
 
+  login() async {
+    try {
+      var emailAddress = _email.text;
+      var password = _password.text;
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailAddress,
+        password: password,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('User not found');
+      } else if (e.code == 'wrong-password') {
+        print('wrong password entered');
+      }
+    }
+  }
+
   @override
   void dispose() {
     _email.dispose();
@@ -32,7 +49,7 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Register')),
+        title: const Center(child: Text('Login')),
       ),
       body: FutureBuilder(
         future: Firebase.initializeApp(
@@ -62,16 +79,10 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () async {
-                      var emailAddress = _email.text;
-                      var password = _password.text;
-                      await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                        email: emailAddress,
-                        password: password,
-                      );
+                    onPressed: () {
+                      login();
                     },
-                    child: const Text('Register'),
+                    child: const Text('Login'),
                   ),
                 ],
               );
