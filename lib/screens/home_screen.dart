@@ -17,19 +17,21 @@ class HomeScreen extends StatelessWidget {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            // print(FirebaseAuth.instance.currentUser);
-            // final user = FirebaseAuth.instance.currentUser;
-            // if (user?.emailVerified ?? false) {
-            //   return const Text('Your a verified user');
-            // } else {
-            //   print('You need to verify your email id ');
-            //   return VerifyEmailView();
-            // }
-            return LoginView();
+            print(FirebaseAuth.instance.currentUser);
+            final user = FirebaseAuth.instance.currentUser;
+            if (user != null) {
+              if (user.emailVerified) {
+                return const Text('Your a verified user');
+              } else {
+                return const VerifyEmailView();
+              }
+            } else {
+              return const LoginView();
+            }
           default:
             return const CircularProgressIndicator();
         }
       },
-    ) ;
+    );
   }
 }
