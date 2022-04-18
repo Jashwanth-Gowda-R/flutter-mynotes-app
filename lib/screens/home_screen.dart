@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/screens/login_view.dart';
+import 'package:mynotes/screens/my_notes_view.dart';
 import 'package:mynotes/screens/verify_email_view.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -21,7 +22,7 @@ class HomeScreen extends StatelessWidget {
             final user = FirebaseAuth.instance.currentUser;
             if (user != null) {
               if (user.emailVerified) {
-                return const Text('Your a verified user');
+                return const NotesView();
               } else {
                 return const VerifyEmailView();
               }
