@@ -10,31 +10,26 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Home')),
+    return FutureBuilder(
+      future: Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
       ),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              // print(FirebaseAuth.instance.currentUser);
-              // final user = FirebaseAuth.instance.currentUser;
-              // if (user?.emailVerified ?? false) {
-              //   return const Text('Your a verified user');
-              // } else {
-              //   print('You need to verify your email id ');
-              //   return VerifyEmailView();
-              // }
-              return LoginView();
-            default:
-              return const CircularProgressIndicator();
-          }
-        },
-      ),
-    );
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            // print(FirebaseAuth.instance.currentUser);
+            // final user = FirebaseAuth.instance.currentUser;
+            // if (user?.emailVerified ?? false) {
+            //   return const Text('Your a verified user');
+            // } else {
+            //   print('You need to verify your email id ');
+            //   return VerifyEmailView();
+            // }
+            return LoginView();
+          default:
+            return const CircularProgressIndicator();
+        }
+      },
+    ) ;
   }
 }
