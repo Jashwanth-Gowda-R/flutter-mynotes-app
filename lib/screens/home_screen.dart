@@ -1,10 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:mynotes/firebase_options.dart';
 import 'package:mynotes/screens/login_view.dart';
 import 'package:mynotes/screens/my_notes_view.dart';
 import 'package:mynotes/screens/verify_email_view.dart';
+import 'package:mynotes/services/auth/auth_services.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,16 +10,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      ),
+      future: AuthService.firebase().initialize(),
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            print(FirebaseAuth.instance.currentUser);
-            final user = FirebaseAuth.instance.currentUser;
+            print(AuthService.firebase().currentUser);
+            final user = AuthService.firebase().currentUser;
             if (user != null) {
-              if (user.emailVerified) {
+              if (user.isEmailVerified) {
                 return const NotesView();
               } else {
                 return const VerifyEmailView();
@@ -30,7 +26,7 @@ class HomeScreen extends StatelessWidget {
               return const LoginView();
             }
           default:
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
         }
       },
     );

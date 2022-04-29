@@ -1,10 +1,9 @@
 // ignore_for_file: avoid_print
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mynotes/constants/routes.dart';
-import 'package:mynotes/firebase_options.dart';
+import 'package:mynotes/services/auth/auth_exceptions.dart';
+import 'package:mynotes/services/auth/auth_services.dart';
 import 'package:mynotes/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -29,31 +28,25 @@ class _LoginViewState extends State<LoginView> {
     try {
       var emailAddress = _email.text;
       var password = _password.text;
-      var userCred = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      var userCred = await AuthService.firebase().logIn(
         email: emailAddress,
         password: password,
       );
       print(userCred);
-      var user = await FirebaseAuth.instance.currentUser;
-      if (user?.emailVerified ?? false) {
+      var user = AuthService.firebase().currentUser;
+      if (user?.isEmailVerified ?? false) {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(notesRoute, (route) => false);
       } else {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(verifyEmailRoute, (route) => false);
       }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('User not found');
-        await showErrorDialog(context, 'User not found');
-      } else if (e.code == 'wrong-password') {
-        print('wrong password entered');
-        await showErrorDialog(context, 'Wrong Credentials');
-      } else {
-        await showErrorDialog(context, 'Error : ${e.code}');
-      }
-    } catch (e) {
-      await showErrorDialog(context, e.toString());
+    } on UserNotFoundAuthException {
+      await showErrorDialog(context, 'User not found');
+    } on WrongPasswordAuthException {
+      await showErrorDialog(context, 'Wrong Credentials');
+    } on GenericAuthException {
+      await showErrorDialog(context, 'Error : Authentication Error');
     }
   }
 
